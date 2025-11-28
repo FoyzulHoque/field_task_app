@@ -21,6 +21,8 @@ class HiveService extends GetxService {
   }
 
   List<TaskModel> getPendingSync() {
-    return _taskBox.values.where((e) => !e.isSynced).toList();
+    return _taskBox.values
+        .where((e) => !e.isSynced && e.status == 'completed')
+        .toList();
   }
 }
