@@ -1,67 +1,64 @@
 import 'package:hive/hive.dart';
 
+part 'task_model.g.dart';
+
 @HiveType(typeId: 0)
 class TaskModel extends HiveObject {
   @HiveField(0)
   String id;
 
   @HiveField(1)
-  String title;
+  String agentId;
 
   @HiveField(2)
-  String description;
+  String agentName;
 
   @HiveField(3)
-  double lat;
+  String title;
 
   @HiveField(4)
-  double lng;
+  String description;
 
   @HiveField(5)
-  DateTime deadline;
+  double lat;
 
   @HiveField(6)
-  String status; // pending, in_progress, completed
+  double lng;
 
   @HiveField(7)
+  DateTime deadline;
+
+  @HiveField(8)
+  String status; // pending, in_progress, completed
+
+  @HiveField(9)
   bool isSynced;
 
   TaskModel({
     required this.id,
+    required this.agentId,
+    required this.agentName,
     required this.title,
     required this.description,
     required this.lat,
     required this.lng,
     required this.deadline,
     this.status = 'pending',
-    this.isSynced = true,
+    this.isSynced = false,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirebaseMap() {
     return {
       'id': id,
+      'agentId': agentId,
+      'agentName': agentName,
       'title': title,
       'description': description,
       'lat': lat,
       'lng': lng,
       'deadline': deadline.toIso8601String(),
       'status': status,
-      'isSynced': isSynced,
+      'isSynced': true,
     };
-  }
-
-  factory TaskModel.fromMap(Map<String, dynamic> map) {
-    return TaskModel(
-      id: map['id'] ?? '',
-      title: map['title'] ?? '',
-      description: map['description'] ?? '',
-      lat: (map['lat'] ?? 0.0).toDouble(),
-      lng: (map['lng'] ?? 0.0).toDouble(),
-      deadline: DateTime.parse(
-        map['deadline'] ?? DateTime.now().toIso8601String(),
-      ),
-      status: map['status'] ?? 'pending',
-      isSynced: map['isSynced'] ?? true,
-    );
   }
 }

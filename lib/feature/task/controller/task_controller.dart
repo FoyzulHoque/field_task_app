@@ -1,8 +1,63 @@
-import 'package:field_task_app/core/services/hive/controller/hive_controller.dart';
+import 'package:field_task_app/core/services/hive/hive_services.dart';
 import 'package:field_task_app/core/services/hive/model/task_model.dart';
-import 'package:field_task_app/core/services/location/location_service.dart';
+
 import 'package:field_task_app/core/services/sync/sync_services.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+// class TaskController extends GetxController {
+//   var tasks = <TaskModel>[].obs;
+
+//   @override
+//   void onInit() {
+//     super.onInit();
+//     loadLocalTasks();
+//   }
+
+//   void loadLocalTasks() {
+//     tasks.value = HiveService.to.getAllTasks();
+//   }
+
+//   Future<void> createTask(
+//     String title,
+//     String description,
+//     double lat,
+//     double lng,
+//     DateTime deadline,
+//     String agentId,
+//     String agentName,
+//   ) async {
+//     final t = await SyncService.to.createLocalTask(
+//       title: title,
+//       description: description,
+//       lat: lat,
+//       lng: lng,
+//       deadline: deadline,
+//       agentId: agentId,
+//       agentName: agentName,
+//     );
+
+//     tasks.add(t);
+//   }
+
+//   Future<bool> checkIn(TaskModel t) async {
+//     t.status = "in_progress";
+//     t.isSynced = false;
+//     await HiveService.to.saveTask(t);
+//     tasks.refresh();
+//     return true;
+//   }
+
+//   Future<bool> completeTask(TaskModel t) async {
+//     t.status = "completed";
+//     t.isSynced = false;
+//     await HiveService.to.saveTask(t);
+//     tasks.refresh();
+//     return true;
+//   }
+// }
+
+import 'package:field_task_app/core/services/location/location_service.dart';
 
 class TaskController extends GetxController {
   var tasks = <TaskModel>[].obs;
@@ -12,27 +67,47 @@ class TaskController extends GetxController {
   void onInit() {
     super.onInit();
     loadLocalTasks();
+    // Optional: trigger a sync on controller init
+    SyncService.to.syncPendingTasks();
   }
 
   void loadLocalTasks() {
     tasks.value = HiveService.to.getAllTasks();
   }
 
-  Future<void> createTask(
-    String title,
-    String description,
-    double lat,
-    double lng,
-    DateTime deadline,
-  ) async {
-    final t = SyncService.to.createLocalTask(
+  String getSyncStatus(TaskModel t) {
+    if (t.isSynced) return 'Synced';
+    return 'Pending';
+  }
+
+  Color getSyncStatusColor(TaskModel t) {
+    return t.isSynced ? Colors.green : Colors.orange;
+  }
+
+  /// Creates a task locally and triggers a sync for pending tasks
+  Future<void> createTask({
+    required String title,
+    required String description,
+    required double lat,
+    required double lng,
+    required DateTime deadline,
+    required String agentId,
+    required String agentName,
+  }) async {
+    final t = await SyncService.to.createLocalTask(
       title: title,
       description: description,
       lat: lat,
       lng: lng,
       deadline: deadline,
+      agentId: agentId,
+      agentName: agentName,
     );
+
     tasks.add(t);
+
+    // Sync all pending tasks
+    await SyncService.to.syncPendingTasks();
   }
 
   Future<String?> canCheckIn(TaskModel t) async {
@@ -62,6 +137,9 @@ class TaskController extends GetxController {
     t.isSynced = false;
     await HiveService.to.saveTask(t);
     tasks.refresh();
+
+    // Sync all pending tasks
+    await SyncService.to.syncPendingTasks();
     return true;
   }
 
@@ -71,10 +149,14 @@ class TaskController extends GetxController {
       Get.snackbar('Cannot complete', reason);
       return false;
     }
+
     t.status = 'completed';
     t.isSynced = false;
     await HiveService.to.saveTask(t);
     tasks.refresh();
+
+    // Sync all pending tasks
+    await SyncService.to.syncPendingTasks();
     return true;
   }
 }
