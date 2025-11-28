@@ -5,31 +5,50 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Today's Tasks")),
+      backgroundColor: Colors.lightBlue[50],
+      appBar: AppBar(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(25),
+          ),
+        ),
+        backgroundColor: Colors.black,
+        centerTitle: true,
+        title: const Text(
+          "Taskboard",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ),
+
       body: Column(
         children: [
-          SizedBox(height: 350, child: AssignedTaskView()),
+          Expanded(child: AssignedTaskView()),
           SizedBox(height: 12),
-          Divider(thickness: 1),
+          Divider(thickness: 2, color: Colors.black),
           SizedBox(height: 12),
           Expanded(child: TaskListView()), // wrap with Expanded
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        mini: true,
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+        child: const Icon(Icons.add, size: 28),
         onPressed: () => Get.to(() => const TaskCreatePage()),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation
+          .centerFloat, // ✅ centers it at the bottom
     );
   }
 }
