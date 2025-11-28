@@ -10,7 +10,7 @@ class TaskListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TaskController c = Get.put(TaskController());
+    final TaskController c = Get.find<TaskController>();
 
     return Container(
       width: double.infinity,

@@ -4,59 +4,6 @@ import 'package:field_task_app/core/services/hive/model/task_model.dart';
 import 'package:field_task_app/core/services/sync/sync_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-// class TaskController extends GetxController {
-//   var tasks = <TaskModel>[].obs;
-
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     loadLocalTasks();
-//   }
-
-//   void loadLocalTasks() {
-//     tasks.value = HiveService.to.getAllTasks();
-//   }
-
-//   Future<void> createTask(
-//     String title,
-//     String description,
-//     double lat,
-//     double lng,
-//     DateTime deadline,
-//     String agentId,
-//     String agentName,
-//   ) async {
-//     final t = await SyncService.to.createLocalTask(
-//       title: title,
-//       description: description,
-//       lat: lat,
-//       lng: lng,
-//       deadline: deadline,
-//       agentId: agentId,
-//       agentName: agentName,
-//     );
-
-//     tasks.add(t);
-//   }
-
-//   Future<bool> checkIn(TaskModel t) async {
-//     t.status = "in_progress";
-//     t.isSynced = false;
-//     await HiveService.to.saveTask(t);
-//     tasks.refresh();
-//     return true;
-//   }
-
-//   Future<bool> completeTask(TaskModel t) async {
-//     t.status = "completed";
-//     t.isSynced = false;
-//     await HiveService.to.saveTask(t);
-//     tasks.refresh();
-//     return true;
-//   }
-// }
-
 import 'package:field_task_app/core/services/location/location_service.dart';
 
 class TaskController extends GetxController {
@@ -67,7 +14,6 @@ class TaskController extends GetxController {
   void onInit() {
     super.onInit();
     loadLocalTasks();
-    // Optional: trigger a sync on controller init
     SyncService.to.syncPendingTasks();
   }
 
@@ -106,8 +52,8 @@ class TaskController extends GetxController {
 
     tasks.add(t);
 
-    // Sync all pending tasks
-    await SyncService.to.syncPendingTasks();
+    // // Sync all pending tasks
+    //await SyncService.to.syncPendingTasks();
   }
 
   Future<String?> canCheckIn(TaskModel t) async {
@@ -139,7 +85,7 @@ class TaskController extends GetxController {
     tasks.refresh();
 
     // Sync all pending tasks
-    await SyncService.to.syncPendingTasks();
+    //await SyncService.to.syncPendingTasks();
     return true;
   }
 
