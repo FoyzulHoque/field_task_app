@@ -46,7 +46,10 @@ class HomeView extends StatelessWidget {
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         child: const Icon(Icons.add, size: 28),
-        onPressed: () => Get.to(() => const TaskCreatePage()),
+
+        onPressed: () {
+          Get.to(TaskCreatePage());
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation
           .centerFloat, // ✅ centers it at the bottom
