@@ -97,15 +97,17 @@ class TaskListView extends StatelessWidget {
                                   color: Colors.blueGrey,
                                 ),
                                 const SizedBox(width: 6),
-                                Text(
+                                const Text(
                                   "Deadline: ",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black,
                                   ),
                                 ),
                                 Text(
-                                  DateFormat('MMM dd, yyyy').format(t.deadline),
+                                  DateFormat(
+                                    'MMM dd, yyyy hh:mm a',
+                                  ).format(t.deadline),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.red,

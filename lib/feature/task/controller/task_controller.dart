@@ -54,6 +54,8 @@ class TaskController extends GetxController {
 
     // Sync all pending tasks
     await SyncService.to.syncPendingTasks();
+
+    Get.back();
   }
 
   Future<String?> canCheckIn(TaskModel t) async {
@@ -75,7 +77,12 @@ class TaskController extends GetxController {
   Future<bool> checkIn(TaskModel t) async {
     final reason = await canCheckIn(t);
     if (reason != null) {
-      Get.snackbar('Cannot check in', reason);
+      Get.snackbar(
+        'Cannot check in',
+        reason,
+        colorText: Colors.white,
+        backgroundColor: Colors.red,
+      );
       return false;
     }
 
@@ -92,7 +99,12 @@ class TaskController extends GetxController {
   Future<bool> completeTask(TaskModel t) async {
     final reason = await canCheckIn(t);
     if (reason != null) {
-      Get.snackbar('Cannot complete', reason);
+      Get.snackbar(
+        'Cannot complete',
+        reason,
+        colorText: Colors.white,
+        backgroundColor: Colors.red,
+      );
       return false;
     }
 

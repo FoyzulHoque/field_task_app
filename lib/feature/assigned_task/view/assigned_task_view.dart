@@ -47,7 +47,9 @@ class AssignedTaskView extends StatelessWidget {
                       final task = assignedTasks[index];
 
                       return InkWell(
-                        onTap: () => Get.to(() => CompleteTaskView(task: task)),
+                        onTap: () {
+                          Get.to(() => CompleteTaskView(task: task));
+                        },
                         child: Card(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
