@@ -3,6 +3,7 @@ import 'package:field_task_app/feature/assigned_task/controller/assigned_task_co
 import 'package:field_task_app/feature/complete_task/view/complete_task_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class AssignedTaskView extends StatelessWidget {
   final AssignedTaskController controller = Get.put(AssignedTaskController());
@@ -19,9 +20,12 @@ class AssignedTaskView extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.all(12.0),
-            child: Text(
-              "All Assigned Tasks",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            child: Align(
+              alignment: AlignmentDirectional.center,
+              child: Text(
+                "All Assigned Tasks",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
 
@@ -29,11 +33,15 @@ class AssignedTaskView extends StatelessWidget {
             child: assignedTasks.isEmpty
                 ? const Center(
                     child: Text(
-                      "No tasks available",
-                      style: TextStyle(fontSize: 16),
+                      "No assigned available",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   )
                 : ListView.builder(
+                    padding: EdgeInsets.zero,
                     itemCount: assignedTasks.length,
                     itemBuilder: (_, index) {
                       final task = assignedTasks[index];
@@ -41,73 +49,116 @@ class AssignedTaskView extends StatelessWidget {
                       return InkWell(
                         onTap: () => Get.to(() => CompleteTaskView(task: task)),
                         child: Card(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              12,
+                            ), // Rounded corners
                           ),
-                          elevation: 2,
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          elevation: 4, // subtle shadow
+                          shadowColor: Colors.grey.withOpacity(0.3),
                           child: Padding(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   task.title,
                                   style: const TextStyle(
-                                    fontSize: 17,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-
-                                const SizedBox(height: 8),
-
+                                const SizedBox(height: 10),
                                 Text(
                                   task.description,
                                   style: const TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 15,
                                     color: Colors.black87,
                                   ),
                                 ),
-
-                                const SizedBox(height: 10),
-
+                                const SizedBox(height: 12),
                                 Row(
                                   children: [
                                     const Icon(Icons.person, size: 18),
                                     const SizedBox(width: 6),
-                                    Text(
-                                      "Assigned To: ${task.assignedAgent}",
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
+                                    Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          const TextSpan(
+                                            text: "Assigned To: ",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors
+                                                  .black, // label in black
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: task.assignedAgent,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors
+                                                  .green, // agent name in green
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
 
                                 const SizedBox(height: 6),
-
                                 Row(
                                   children: [
-                                    const Icon(Icons.calendar_today, size: 18),
+                                    const Icon(
+                                      Icons.calendar_today,
+                                      size: 18,
+                                      color: Colors.blueGrey,
+                                    ),
                                     const SizedBox(width: 6),
-                                    Text(
-                                      "Deadline: ${task.deadline}",
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
+                                    Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          const TextSpan(
+                                            text: "Deadline: ",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors
+                                                  .black, // label in black
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: DateFormat('MMM dd, yyyy')
+                                                .format(
+                                                  DateTime.parse(task.deadline),
+                                                ),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.red, // date in red
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
 
                                 const SizedBox(height: 6),
-
                                 Row(
                                   children: [
-                                    const Icon(Icons.flag, size: 18),
+                                    const Icon(
+                                      Icons.flag,
+                                      size: 18,
+                                      color: Colors.blueGrey,
+                                    ),
                                     const SizedBox(width: 6),
-                                    Text("Status: "),
+                                    const Text("Status: "),
                                     Text(
                                       task.status,
                                       style: TextStyle(

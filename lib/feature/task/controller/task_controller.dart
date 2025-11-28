@@ -52,8 +52,8 @@ class TaskController extends GetxController {
 
     tasks.add(t);
 
-    // // Sync all pending tasks
-    //await SyncService.to.syncPendingTasks();
+    // Sync all pending tasks
+    await SyncService.to.syncPendingTasks();
   }
 
   Future<String?> canCheckIn(TaskModel t) async {
@@ -85,7 +85,7 @@ class TaskController extends GetxController {
     tasks.refresh();
 
     // Sync all pending tasks
-    //await SyncService.to.syncPendingTasks();
+    await SyncService.to.syncPendingTasks();
     return true;
   }
 
