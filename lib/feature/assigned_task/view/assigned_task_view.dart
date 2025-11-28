@@ -1,11 +1,13 @@
 import 'package:field_task_app/feature/assigned_task/controller/assigned_task_controller.dart';
-import 'package:field_task_app/feature/assigned_task/model/assigned_task_model.dart';
+
 import 'package:field_task_app/feature/complete_task/view/complete_task_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AssignedTaskView extends StatelessWidget {
   final AssignedTaskController controller = Get.put(AssignedTaskController());
+
+  AssignedTaskView({super.key});
 
   @override
   Widget build(BuildContext context) {

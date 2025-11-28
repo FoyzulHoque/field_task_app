@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TaskDetailsPage extends StatelessWidget {
   final String taskId;
-  const TaskDetailsPage({Key? key, required this.taskId}) : super(key: key);
+  const TaskDetailsPage({super.key, required this.taskId});
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +45,12 @@ class TaskDetailsPage extends StatelessWidget {
                   child: const Text('Check-In'),
                   onPressed: () async {
                     final ok = await c.checkIn(t);
-                    if (ok)
+                    if (ok) {
                       Get.snackbar(
                         'Checked In',
                         'Status updated to in_progress',
                       );
+                    }
                   },
                 ),
                 const SizedBox(width: 12),
@@ -57,8 +58,9 @@ class TaskDetailsPage extends StatelessWidget {
                   child: const Text('Complete'),
                   onPressed: () async {
                     final ok = await c.completeTask(t);
-                    if (ok)
+                    if (ok) {
                       Get.snackbar('Completed', 'Task marked as completed');
+                    }
                   },
                 ),
               ],

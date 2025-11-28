@@ -1,37 +1,42 @@
 import 'package:field_task_app/core/services/hive/model/task_model.dart';
-import 'package:field_task_app/core/services/sync/sync_services.dart';
-import 'package:field_task_app/feature/assigned_task/view/assigned_task_view.dart';
 import 'package:field_task_app/feature/task/controller/task_controller.dart';
-import 'package:field_task_app/feature/task/view/task_create_view.dart';
+
 import 'package:field_task_app/feature/task/view/task_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TaskListPage extends StatelessWidget {
-  const TaskListPage({Key? key}) : super(key: key);
+class TaskListView extends StatelessWidget {
+  const TaskListView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final TaskController c = Get.put(TaskController());
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Today's Tasks"),
-        actions: [
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Create tasks offline and sync when online",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+
+          // Sync Button
           IconButton(
             icon: const Icon(Icons.sync),
-            onPressed: () async {
+            onPressed: () {
               c.loadLocalTasks();
               Get.snackbar('Sync', 'Sync completed');
             },
           ),
-        ],
-      ),
-      body: Column(
-        children: [
+
+          // Task List
           Expanded(
             child: Obx(() {
               final list = c.tasks;
+
               if (list.isEmpty) {
                 return const Center(child: Text('No tasks yet'));
               }
@@ -44,7 +49,26 @@ class TaskListPage extends StatelessWidget {
 
                   return ListTile(
                     title: Text(t.title),
-                    subtitle: Text('${t.description}\nDue: ${t.deadline}'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${t.description}\nDue: ${t.deadline.toString()}'),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.sync, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              c.getSyncStatus(t),
+                              style: TextStyle(
+                                color: c.getSyncStatusColor(t),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                     isThreeLine: true,
                     trailing: _statusIcon(t.status),
                     onTap: () => Get.to(() => TaskDetailsPage(taskId: t.id)),
@@ -53,16 +77,7 @@ class TaskListPage extends StatelessWidget {
               );
             }),
           ),
-
-          const SizedBox(height: 16),
-
-          // Assigned Task Section (without Scaffold)
-          SizedBox(height: 250, child: AssignedTaskView()),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () => Get.to(() => const TaskCreatePage()),
       ),
     );
   }

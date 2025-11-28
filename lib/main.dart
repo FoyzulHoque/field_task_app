@@ -1,9 +1,8 @@
-import 'package:field_task_app/core/services/hive/controller/hive_controller.dart';
-import 'package:field_task_app/core/services/hive/hive_adapters.dart';
+import 'package:field_task_app/core/services/hive/hive_services.dart';
 import 'package:field_task_app/core/services/hive/model/assigned_task_model_hive.dart';
-import 'package:field_task_app/core/services/hive/model/task_model.dart';
 import 'package:field_task_app/core/services/sync/sync_services.dart';
-import 'package:field_task_app/feature/splash/view/splash_view.dart';
+
+import 'package:field_task_app/feature/task/controller/task_controller.dart';
 import 'package:field_task_app/firebase_options.dart';
 import 'package:field_task_app/route/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -16,35 +15,23 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Configure EasyLoading settings
-  configEasyLoading();
-
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Hive.initFlutter();
-  await registerHiveAdapters();
-  await Hive.openBox<TaskModel>(HiveBoxes.tasks);
+
+  if (!Hive.isAdapterRegistered(1)) {
+    Hive.registerAdapter(AssignedTaskHiveModelAdapter());
+  }
   await Hive.openBox<AssignedTaskHiveModel>('assigned_tasks');
 
-  // Initialize Hive Service
-  await Get.putAsync(() => HiveService().init());
+  final hiveService = await HiveService().init();
+  Get.put(hiveService);
+  // Initialize HiveService and SyncService properly
+  //await Get.putAsync(() => HiveService().init());
+  // Get.put(HiveService());
+  Get.put(SyncService());
+  Get.put(TaskController());
 
-  // // Kick off sync service
-  await Get.putAsync(() => SyncService().init());
-
-  // Initialize Firebase (ensure Firebase is initialized before runApp())
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
-}
-
-void configEasyLoading() {
-  EasyLoading.instance
-    ..loadingStyle = EasyLoadingStyle.custom
-    ..backgroundColor = Colors.grey
-    ..textColor = Colors.white
-    ..indicatorColor = Colors.white
-    ..maskColor = Colors.green
-    ..userInteractions = false
-    ..dismissOnTap = false;
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -141,7 +141,7 @@ import 'package:geolocator/geolocator.dart';
 class CompleteTaskView extends StatefulWidget {
   final AssignedTaskModel task;
 
-  const CompleteTaskView({required this.task});
+  const CompleteTaskView({super.key, required this.task});
 
   @override
   State<CompleteTaskView> createState() => _TaskDetailsScreenState();

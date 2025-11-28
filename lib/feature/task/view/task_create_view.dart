@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TaskCreatePage extends StatefulWidget {
-  const TaskCreatePage({Key? key}) : super(key: key);
+  const TaskCreatePage({super.key});
 
   @override
   State<TaskCreatePage> createState() => _TaskCreatePageState();
@@ -13,18 +13,30 @@ class TaskCreatePage extends StatefulWidget {
 class _TaskCreatePageState extends State<TaskCreatePage> {
   final _title = TextEditingController();
   final _desc = TextEditingController();
+  final _agentId = TextEditingController();
+  final _agentName = TextEditingController();
+
   DateTime _deadline = DateTime.now().add(const Duration(hours: 2));
   LatLng? _picked;
 
+  final TaskController _controller = Get.find<TaskController>();
+
   @override
   Widget build(BuildContext context) {
-    final c = Get.find<TaskController>();
     return Scaffold(
       appBar: AppBar(title: const Text('Create Task')),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
+            TextField(
+              controller: _agentId,
+              decoration: const InputDecoration(labelText: 'Agent ID'),
+            ),
+            TextField(
+              controller: _agentName,
+              decoration: const InputDecoration(labelText: 'Agent Name'),
+            ),
             TextField(
               controller: _title,
               decoration: const InputDecoration(labelText: 'Title'),
@@ -95,13 +107,25 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                   );
                   return;
                 }
-                await c.createTask(
-                  _title.text,
-                  _desc.text,
-                  _picked!.latitude,
-                  _picked!.longitude,
-                  _deadline,
+                if (_agentId.text.isEmpty || _agentName.text.isEmpty) {
+                  Get.snackbar(
+                    'Missing Agent Info',
+                    'Please enter Agent ID and Name',
+                  );
+                  return;
+                }
+
+                await _controller.createTask(
+                  title: _title.text,
+                  description: _desc.text,
+                  lat: _picked!.latitude,
+                  lng: _picked!.longitude,
+                  deadline: _deadline,
+                  agentId: _agentId.text,
+                  agentName: _agentName.text,
                 );
+
+                Get.snackbar('Task Saved', 'Task created successfully');
                 Get.back();
               },
             ),
