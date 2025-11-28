@@ -37,7 +37,8 @@ class HomeView extends StatelessWidget {
           SizedBox(height: 12),
           Divider(thickness: 2, color: Colors.black),
           SizedBox(height: 12),
-          Expanded(child: TaskListView()), // wrap with Expanded
+          Expanded(child: TaskListView()),
+          SizedBox(height: 16),
         ],
       ),
       floatingActionButton: FloatingActionButton(
