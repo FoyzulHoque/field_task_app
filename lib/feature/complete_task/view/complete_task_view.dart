@@ -141,6 +141,7 @@ class _TaskDetailsScreenState extends State<CompleteTaskView> {
   GoogleMapController? mapController;
   Position? currentPosition;
   double distance = 9999;
+  bool isLoading = false;
 
   Set<Polyline> polylines = {};
 
@@ -190,9 +191,22 @@ class _TaskDetailsScreenState extends State<CompleteTaskView> {
       return;
     }
 
-    await controller.completeTask(widget.task);
-    Get.snackbar("Success", "Task marked as completed!");
-    Get.back();
+    setState(() => isLoading = true);
+
+    try {
+      await controller.completeTask(widget.task);
+      Get.back();
+      Get.snackbar(
+        "Success",
+        "Task marked as completed!",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar("Error", "Failed to complete task: $e");
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -331,11 +345,25 @@ class _TaskDetailsScreenState extends State<CompleteTaskView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          onPressed: distance <= 100 ? _completeTask : null,
-                          child: const Text(
-                            "Complete Task",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
+                          onPressed: (distance <= 100 && !isLoading)
+                              ? _completeTask
+                              : null,
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  "Complete Task",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     ],

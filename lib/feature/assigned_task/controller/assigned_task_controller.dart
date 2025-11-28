@@ -90,7 +90,14 @@ class AssignedTaskController extends GetxController {
     assignedTasks.refresh();
 
     if (online) {
-      await firebaseService.updateTaskStatus(task.id, "completed");
+      try {
+        await firebaseService
+            .updateTaskStatus(task.id, "completed")
+            .timeout(const Duration(seconds: 5));
+      } catch (e) {
+        // If firebase fails or times out, add to pending
+        pendingCompletedTasks.add(task.id);
+      }
     } else {
       pendingCompletedTasks.add(task.id);
     }
@@ -115,6 +122,12 @@ class AssignedTaskController extends GetxController {
   }
 
   Future<bool> hasInternet() async {
-    return await InternetConnectionChecker().hasConnection;
+    try {
+      return await InternetConnectionChecker()
+          .hasConnection
+          .timeout(const Duration(seconds: 5));
+    } catch (e) {
+      return false;
+    }
   }
 }

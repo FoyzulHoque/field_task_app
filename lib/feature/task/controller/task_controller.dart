@@ -93,6 +93,7 @@ class TaskController extends GetxController {
 
     // Sync all pending tasks
     await SyncService.to.syncPendingTasks();
+    Get.back();
     return true;
   }
 
@@ -115,6 +116,7 @@ class TaskController extends GetxController {
 
     // Sync all pending tasks
     await SyncService.to.syncPendingTasks();
+    Get.back();
     return true;
   }
 }
